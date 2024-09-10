@@ -16,12 +16,15 @@ export default function Zone(props) {
     "Elf",
     "Zwölf",
   ];
-  
+
   function uppercase(string) {
     var f_0 = string.toLowerCase();
     return f_0[0].toUpperCase() + f_0.slice(1);
   }
-  
+  function containsOnlyDigits(str) {
+    return /^\d+$/.test(str);
+  }
+
   function convert_to_number(german) {
     var result = null;
     var error_msg = "Invalid";
@@ -30,7 +33,7 @@ export default function Zone(props) {
     var f_2 = "";
     var fx = "";
     var fy = "";
-  
+
     // 2000000000000 - 999999999999999
     if (german.replaceAll(" ", "").includes("Billionen")) {
       f_0 = german.replaceAll(" ", "").split("Billionen");
@@ -53,11 +56,11 @@ export default function Zone(props) {
         }
       }
     }
-  
+
     // 1000000000000 - 1999999999999
     else if (german.replaceAll(" ", "").includes("Billion")) {
       f_0 = german.replaceAll(" ", "").split("Billion");
-  
+
       if (f_0[0].trim() === "Eine") {
         f_1 = f_0[1].trim();
         if (f_1 === "") {
@@ -96,11 +99,11 @@ export default function Zone(props) {
         }
       }
     }
-  
+
     // 1000000000 - 1999999999
     else if (german.replaceAll(" ", "").includes("Milliarde")) {
       f_0 = german.replaceAll(" ", "").split("Milliarde");
-  
+
       if (f_0[0].trim() === "Eine") {
         f_1 = f_0[1].trim();
         if (f_1 === "") {
@@ -117,7 +120,7 @@ export default function Zone(props) {
         return error_msg;
       }
     }
-  
+
     // 2000000 - 999999999
     else if (german.replaceAll(" ", "").includes("Millionen")) {
       f_0 = german.replaceAll(" ", "").split("Millionen");
@@ -140,11 +143,11 @@ export default function Zone(props) {
         }
       }
     }
-  
+
     // 1000000 - 1999999
     else if (german.replaceAll(" ", "").includes("Million")) {
       f_0 = german.replaceAll(" ", "").split("Million");
-  
+
       if (f_0[0] === "Eine") {
         f_1 = f_0[1];
         if (f_1 === "") {
@@ -161,7 +164,7 @@ export default function Zone(props) {
         return error_msg;
       }
     }
-  
+
     // 1000 - 999999
     else if (german.includes("tausend")) {
       f_0 = german.split("tausend");
@@ -188,7 +191,7 @@ export default function Zone(props) {
         return error_msg;
       }
     }
-  
+
     // 100 - 999
     else if (german.includes("hundert")) {
       f_0 = german.split("hundert");
@@ -215,7 +218,7 @@ export default function Zone(props) {
         return error_msg;
       }
     }
-  
+
     // 20 - 99
     else if (german.includes("zig") || german.includes("ßig")) {
       if (german.length === 7) {
@@ -253,7 +256,7 @@ export default function Zone(props) {
         }
       }
     }
-  
+
     // 13 - 19
     else if (german.includes("zehn")) {
       f_0 = german.slice(0, 4);
@@ -282,25 +285,28 @@ export default function Zone(props) {
     else if (nums.includes(german)) {
       result = nums.indexOf(german);
     }
-  
+
     if (result != null) {
       return result;
     } else {
       return error_msg;
     }
   }
-  
+
   function convert_to_german(number) {
     var f_1 = '';
     var f_2 = '';
-    if (typeof german !== "string") {
-      var result = "";
+    var result = "";
+
+    if (containsOnlyDigits(number)) {
+      number = parseInt(number)
       // 1 - 12
       if (number === 0) {
         result = "Null";
       } else if (number === 1) {
         result = "Eins";
       } else if (number > 1 && number <= 12) {
+        console.log(typeof (number));
         result = nums[number];
       }
       // 13 - 19
@@ -313,7 +319,7 @@ export default function Zone(props) {
         var ending = "";
         f_1 = parseInt(String(number)[1]);
         f_2 = parseInt(String(number)[0]);
-  
+
         if (f_2 === 2) {
           ending = "zwanzig";
         } else if (f_2 === 3) {
@@ -337,12 +343,12 @@ export default function Zone(props) {
           result = uppercase(`${nums[f_2]}-hundert-${convert_to_german(f_1)}`);
         }
       }
-  
+
       // 1000 - 999999
       else if (number >= 1000 && number <= 999999) {
         f_1 = parseInt(String(number).slice(-3));
         f_2 = parseInt(String(number).slice(0, -3));
-  
+
         if (f_1 === 0) {
           if (f_2 === 1) {
             result = "Ein-tausend";
@@ -363,7 +369,7 @@ export default function Zone(props) {
       else if (number >= 1000000 && number <= 999999999) {
         f_1 = parseInt(String(number).slice(-6));
         f_2 = parseInt(String(number).slice(0, -6));
-  
+
         if (f_1 === 0) {
           if (f_2 === 1) {
             result = "Eine Million";
@@ -384,7 +390,7 @@ export default function Zone(props) {
       else if (number >= 10 ** 9 && number <= 999999999999) {
         f_1 = parseInt(String(number).slice(-9));
         f_2 = parseInt(String(number).slice(0, -9));
-  
+
         if (f_1 === 0) {
           if (f_2 === 1) {
             result = "Eine Milliarde";
@@ -405,7 +411,7 @@ export default function Zone(props) {
       else if (number >= 10 ** 12 && number <= 999999999999999) {
         f_1 = parseInt(String(number).slice(-12));
         f_2 = parseInt(String(number).slice(0, -12));
-  
+
         if (f_1 === 0) {
           if (f_2 === 1) {
             result = "Eine Billion";
@@ -421,18 +427,18 @@ export default function Zone(props) {
               `${convert_to_german(f_1)}`;
           }
         }
-      } 
-      else if (number === ''){
-        return '';
       }
-      else {
-        return "Invalid";
-      }
-  
+
       return result;
-    } else {
-      return "Invalid";
     }
+    else if (number === '') {
+      return '';
+    }
+    else {
+      return 'Invalid';
+    }
+
+
   }
 
 
