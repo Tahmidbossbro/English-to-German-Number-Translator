@@ -428,6 +428,9 @@ export default function Zone(props) {
           }
         }
       }
+      else{
+        return 'Invalid';
+      }
 
       return result;
     }
